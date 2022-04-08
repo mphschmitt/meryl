@@ -23,6 +23,8 @@
 #include "kmers.H"
 #include "sequence.H"
 
+#include <memory>
+
 #ifdef CANU                   //  If we're building under
 #include "sqStore.H"          //  Canu, include support
 #else                         //  to read the seqStore
@@ -36,7 +38,7 @@ class merylOperation;
 class merylInput {
 public:
   merylInput(merylOperation *o);
-  merylInput(const char *n, merylFileReader *s, uint32 fileNum=UINT32_MAX);
+  merylInput(const char *n, std::shared_ptr<merylFileReader> s, uint32 fileNum=UINT32_MAX);
   merylInput(const char *n, dnaSeqFile *f, bool doCompression);
   merylInput(const char *n, sqStore *s, uint32 segment, uint32 segmentMax);
   ~merylInput();
@@ -75,33 +77,33 @@ public:
   bool   isCompressedFile(void)   { return((_sequence != NULL) &&
                                            (_sequence->isCompressed())); };
 
-  merylOperation           *_operation;
-  merylFileReader          *_stream;
-  dnaSeqFile               *_sequence;
-  sqStore                  *_store;
+  merylOperation                    *_operation;
+  std::shared_ptr<merylFileReader>  _stream;
+  dnaSeqFile                        *_sequence;
+  sqStore                           *_store;
 
-  char                      _name[FILENAME_MAX+1];
-  bool                      _isMultiSet;
+  char                               _name[FILENAME_MAX+1];
+  bool                               _isMultiSet;
 
   //  For _operation and _stream, a copy of the 'active' kmer
 
-  kmer                      _kmer;
-  kmvalu                    _value;
-  bool                      _valid;
+  kmer                               _kmer;
+  kmvalu                             _value;
+  bool                               _valid;
 
   //  For _store, the position we're at in the store.
 
-  uint32                    _sqBgn;
-  uint32                    _sqEnd;
+  uint32                            _sqBgn;
+  uint32                            _sqEnd;
 
-  sqRead                   *_read;
-  uint32                    _readID;
-  uint32                    _readPos;
+  sqRead                            *_read;
+  uint32                            _readID;
+  uint32                            _readPos;
 
   //  For homopoly compression, a flag, and the last base read.
 
-  bool                      _homopolyCompress;
-  char                      _lastByte;
+  bool                              _homopolyCompress;
+  char                              _lastByte;
 };
 
 #endif  //  MERYLINPUT_H

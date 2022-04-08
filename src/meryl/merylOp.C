@@ -21,6 +21,8 @@
 #include "sqStore.H"
 #endif
 
+#include <memory>
+
 bool            merylOperation::_onlyConfig   = false;
 bool            merylOperation::_showProgress = false;
 merylVerbosity  merylOperation::_verbosity    = sayStandard;
@@ -179,7 +181,8 @@ merylOperation::addInputFromDB(char *dbName) {
     fprintf(stderr, "Adding input from file '%s' to operation '%s'\n",
             dbName, toString(_operation));
 
-  merylFileReader *db = new merylFileReader(dbName);
+  std::shared_ptr<merylFileReader> db = std::make_shared<merylFileReader>(merylFileReader(dbName));
+  
 
   _inputs.push_back(new merylInput(db->filename(), db, _fileNumber));
 

@@ -17,7 +17,7 @@
  */
 
 #include "meryl.H"
-
+#include <memory>
 
 
 merylInput::merylInput(merylOperation *o) {
@@ -47,7 +47,7 @@ merylInput::merylInput(merylOperation *o) {
 
 
 
-merylInput::merylInput(const char *n, merylFileReader *s, uint32 threadFile) {
+merylInput::merylInput(const char *n, std::shared_ptr<merylFileReader> s, uint32 threadFile) {
   _operation        = NULL;
   _stream           = s;
   _sequence         = NULL;
@@ -186,7 +186,6 @@ merylInput::merylInput(const char *n, sqStore *s, uint32 segment, uint32 segment
 
 
 merylInput::~merylInput() {
-  delete _stream;
   delete _operation;
   delete _sequence;
   delete _store;
